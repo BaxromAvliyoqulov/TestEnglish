@@ -1,0 +1,44 @@
+[
+	{
+		"subject": "english",
+		"level": "A1",
+		"question": "What is the opposite of 'happy'?",
+		"options": ["sad", "angry", "tired", "hungry"],
+		"correctAnswer": 0
+	},
+	{
+		"subject": "english",
+		"level": "A1",
+		"question": "Which word means 'to go to bed'?",
+		"options": ["sleep", "eat", "drink", "walk"],
+		"correctAnswer": 0
+	},
+	{
+		"subject": "math",
+		"level": "beginner",
+		"question": "What is 2 + 2?",
+		"options": ["3", "4", "5", "6"],
+		"correctAnswer": 1
+	},
+	{
+		"subject": "math",
+		"level": "beginner",
+		"question": "What is 5 × 3?",
+		"options": ["10", "12", "15", "18"],
+		"correctAnswer": 2
+	},
+	{
+		"subject": "russian",
+		"level": "beginner",
+		"question": "What is 'hello' in Russian?",
+		"options": ["привет", "спасибо", "пожалуйста", "до свидания"],
+		"correctAnswer": 0
+	},
+	{
+		"subject": "history",
+		"level": "beginner",
+		"question": "Who was the first President of the United States?",
+		"options": ["Thomas Jefferson", "George Washington", "John Adams", "Benjamin Franklin"],
+		"correctAnswer": 1
+	}
+]

@@ -1,11 +1,7 @@
 import { initializeApp } from "firebase/app";
 import { getFirestore, collection, addDoc } from "firebase/firestore";
-import { fileURLToPath } from "url";
-import { dirname, join } from "path";
-import fs from "fs";
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
+import fs from "fs/promises";
+import path from "path";
 
 const firebaseConfig = {
 	apiKey: "AIzaSyBSNumZZAhTF7-GtLYGNF8STdg_4fvjTKg",
@@ -17,33 +13,32 @@ const firebaseConfig = {
 	measurementId: "G-JHLB9JRJGG",
 };
 
+// Initialize Firebase
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
-const levels = ["A1", "A2", "B1", "B2", "C1"];
+async function uploadTests() {
+	try {
+		// Read the JSON file
+		const jsonPath = path.join(process.cwd(), "tests.json");
+		const jsonData = await fs.readFile(jsonPath, "utf8");
+		const tests = JSON.parse(jsonData);
 
-const uploadTests = async () => {
-	for (const level of levels) {
-		const dirPath = join(__dirname, "src", "tests", level);
-		if (!fs.existsSync(dirPath)) {
-			console.error(`Directory not found: ${dirPath}`);
-			continue;
+		// Upload each test to Firebase
+		for (const test of tests) {
+			const testData = {
+				...test,
+				createdAt: new Date(),
+			};
+
+			await addDoc(collection(db, "tests"), testData);
+			console.log(`Uploaded test: ${test.question.substring(0, 50)}...`);
 		}
 
-		const files = fs.readdirSync(dirPath);
-		for (const file of files) {
-			const filePath = join(dirPath, file);
-			try {
-				const data = JSON.parse(fs.readFileSync(filePath, "utf8"));
-				const batch = data.map((test) => addDoc(collection(db, "test"), { ...test, level }));
-				await Promise.all(batch);
-				console.log(`Uploaded ${data.length} tests from ${file}`);
-			} catch (error) {
-				console.error(`Error processing file: ${filePath}`, error);
-			}
-		}
+		console.log("All tests uploaded successfully!");
+	} catch (error) {
+		console.error("Error uploading tests:", error);
 	}
-	console.log("All tests uploaded successfully");
-};
+}
 
-uploadTests().catch(console.error);
+uploadTests();
