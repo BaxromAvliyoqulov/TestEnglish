@@ -39,6 +39,7 @@
 				<h2>Select Test</h2>
 				<form @submit.prevent="startTest">
 					<div>
+						<!-- *** Subject *** -->
 						<label for="subject">Subject:</label>
 						<select v-model="subject" required>
 							<option value="english">English</option>
@@ -47,6 +48,19 @@
 							<option value="history">History</option>
 						</select>
 					</div>
+					<!-- *** Number of Questions *** -->
+					<div>
+						<label for="testCount">Number of Questions:</label>
+						<select v-model="testCount" required>
+							<option value="5">5</option>
+							<option value="10">10</option>
+							<option value="20">20</option>
+							<option value="30">30</option>
+							<option value="40">40</option>
+							<option value="50">50</option>
+						</select>
+					</div>
+					<!-- *** Level *** -->
 					<div>
 						<label for="level">Level:</label>
 						<select v-model="level" required>
@@ -64,17 +78,7 @@
 							</template>
 						</select>
 					</div>
-					<div>
-						<label for="testCount">Number of Questions:</label>
-						<select v-model="testCount" required>
-							<option value="5">5</option>
-							<option value="10">10</option>
-							<option value="20">20</option>
-							<option value="30">30</option>
-							<option value="40">40</option>
-							<option value="50">50</option>
-						</select>
-					</div>
+
 					<button type="submit">Start Test</button>
 				</form>
 			</div>
@@ -304,6 +308,9 @@
 		height: 100%;
 		margin: 0;
 		padding: 0;
+		font-family: "Arial", sans-serif;
+		background-color: #f9f9f9;
+		color: #333;
 	}
 
 	#app {
@@ -312,26 +319,209 @@
 		height: 100vh;
 	}
 
-	header {
+	.navbar {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
 		background-color: #007bff;
 		color: white;
-		padding: 1em;
-		text-align: center;
+		padding: 1rem;
+		box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+	}
+
+	.nav-brand {
+		font-size: 1.5rem;
+		font-weight: bold;
+	}
+
+	.nav-items {
+		display: flex;
+		align-items: center;
+		gap: 1rem;
+	}
+
+	.nav-link {
+		color: white;
+		text-decoration: none;
+		font-size: 1rem;
+	}
+
+	.nav-link:hover {
+		text-decoration: underline;
+	}
+
+	.user-profile {
+		position: relative;
+		cursor: pointer;
+	}
+
+	.profile-image {
+		width: 40px;
+		height: 40px;
+		border-radius: 50%;
+		object-fit: cover;
+	}
+
+	.profile-menu {
+		position: absolute;
+		top: 50px;
+		right: 0;
+		background-color: white;
+		box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+		border-radius: 8px;
+		overflow: hidden;
+		width: 200px;
+	}
+
+	.profile-info {
+		display: flex;
+		align-items: center;
+		padding: 1rem;
+		border-bottom: 1px solid #eee;
+	}
+
+	.profile-image-small {
+		width: 30px;
+		height: 30px;
+		border-radius: 50%;
+		margin-right: 0.5rem;
+	}
+
+	.menu-item {
+		display: block;
+		padding: 0.75rem 1rem;
+		color: #333;
+		text-decoration: none;
+		font-size: 0.9rem;
+	}
+
+	.menu-item:hover {
+		background-color: #f0f0f0;
 	}
 
 	main {
 		flex: 1;
-		overflow-y: auto;
-		padding: 1em;
+		padding: 2rem;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+	}
+
+	form {
+		background-color: white;
+		padding: 2rem;
+		border-radius: 8px;
+		box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+		width: 100%;
+		max-width: 400px;
+	}
+
+	form div {
+		margin-bottom: 1rem;
+	}
+
+	label {
+		display: block;
+		margin-bottom: 0.5rem;
+		font-weight: bold;
+	}
+
+	input,
+	select,
+	button {
+		width: 100%;
+		padding: 0.75rem;
+		border: 1px solid #ddd;
+		border-radius: 4px;
+		font-size: 1rem;
+	}
+
+	button {
+		background-color: #007bff;
+		color: white;
+		border: none;
+		cursor: pointer;
+	}
+
+	button:hover {
+		background-color: #0056b3;
+	}
+
+	.test-progress {
+		margin-bottom: 1rem;
+		font-size: 1.2rem;
+		font-weight: bold;
+	}
+
+	.question-container {
+		background-color: white;
+		padding: 2rem;
+		border-radius: 8px;
+		box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+		width: 100%;
+		max-width: 600px;
+	}
+
+	.question-text {
+		font-size: 1.2rem;
+		margin-bottom: 1rem;
+	}
+
+	.options-list {
+		list-style: none;
+		padding: 0;
+		margin: 0;
+	}
+
+	.option-label {
+		display: flex;
+		align-items: center;
+		padding: 0.5rem 0;
+		cursor: pointer;
+	}
+
+	.option-text {
+		margin-left: 0.5rem;
+	}
+
+	.navigation {
+		display: flex;
+		justify-content: space-between;
+		margin-top: 1rem;
+	}
+
+	.results-container {
+		text-align: center;
+	}
+
+	.score-display {
+		background-color: white;
+		padding: 2rem;
+		border-radius: 8px;
+		box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+		width: 100%;
+		max-width: 400px;
+		margin: 0 auto;
 	}
 
 	@media (max-width: 600px) {
-		header {
-			font-size: 1.2em;
+		.navbar {
+			flex-direction: column;
+			align-items: flex-start;
+		}
+
+		.nav-items {
+			flex-direction: column;
+			gap: 0.5rem;
 		}
 
 		main {
-			padding: 0.5em;
+			padding: 1rem;
+		}
+
+		form {
+			padding: 1.5rem;
 		}
 	}
 </style>
