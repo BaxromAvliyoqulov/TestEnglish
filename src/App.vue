@@ -181,23 +181,6 @@
 					alert("Login failed. Please check your credentials.");
 				}
 			};
-
-			const loginWithGoogle = async () => {
-				try {
-					const provider = new GoogleAuthProvider();
-					const result = await signInWithPopup(auth, provider);
-					user.value = result.user;
-				} catch (error) {
-					console.error("Google login error:", error);
-					alert("Google login failed. Please try again.");
-				}
-			};
-
-			const logout = async () => {
-				await signOut(auth);
-				user.value = null;
-			};
-
 			const startTest = async () => {
 				testSelected.value = true;
 				await fetchQuestions();
@@ -267,11 +250,25 @@
 				// Redirect to dashboard or show dashboard content
 			};
 
+			const loginWithGoogle = async () => {
+				try {
+					const provider = new GoogleAuthProvider();
+					const result = await signInWithPopup(auth, provider);
+					user.value = result.user;
+				} catch (error) {
+					console.error("Google login error:", error);
+					alert("Google login failed. Please try again.");
+				}
+			};
+
+			const logout = async () => {
+				await signOut(auth);
+				user.value = null;
+			};
+
 			onMounted(() => {
-				auth.onAuthStateChanged((currentUser) => {
-					if (currentUser) {
-						user.value = currentUser;
-					}
+				onAuthStateChanged(auth, (currentUser) => {
+					user.value = currentUser;
 				});
 			});
 
