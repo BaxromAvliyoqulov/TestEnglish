@@ -26,13 +26,13 @@
 						<label for="password">Password:</label>
 						<input type="password" v-model="password" required />
 					</div>
-					<button type="submit">Login</button>
+					<button type="submit" style="margin-bottom: 20px">Login</button>
 					<button
 						@click="loginWithGoogle"
-						style="background-color: white; border: 1px solid blue; color: blue"
+						style="background-color: white; border: 1px solid #4285f4; color: #4285f4"
 					>
 						<img
-							src="@/assets/google.png"
+							src="../src/img/googleIcon.svg"
 							alt="Google Icon"
 							style="width: 16px; height: 16px; margin-right: 8px"
 						/>
