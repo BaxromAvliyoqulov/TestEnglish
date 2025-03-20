@@ -1,44 +1,83 @@
 import { initializeApp } from "firebase/app";
-import { getFirestore, collection, addDoc } from "firebase/firestore";
-import fs from "fs/promises";
-import path from "path";
+import { getFirestore, collection, addDoc, getDocs, query, where } from "firebase/firestore";
+import { firebaseConfig } from "../firebase";
 
-const firebaseConfig = {
-	apiKey: "AIzaSyBSNumZZAhTF7-GtLYGNF8STdg_4fvjTKg",
-	authDomain: "testquiz-d4274.firebaseapp.com",
-	projectId: "testquiz-d4274",
-	storageBucket: "testquiz-d4274.firebasestorage.app",
-	messagingSenderId: "585977312564",
-	appId: "1:585977312564:web:7433a460fd3508f4b5e161",
-	measurementId: "G-JHLB9JRJGG",
-};
-
-// Initialize Firebase
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
-async function uploadTests() {
+const englishQuestions = {
+	A1: [
+		{
+			question: "What is the correct form of 'be' for 'I'?",
+			options: ["am", "is", "are", "be"],
+			answer: 0,
+			subject: "english",
+			level: "A1",
+			createdAt: new Date(),
+		},
+		// Add more questions...
+	],
+	A2: [
+		// A2 level questions
+	],
+	// Add more levels...
+};
+
+const mathQuestions = {
+	beginner: [
+		{
+			question: "What is 5 + 7?",
+			options: ["10", "11", "12", "13"],
+			answer: 2,
+			subject: "math",
+			level: "beginner",
+			createdAt: new Date(),
+		},
+		// Add more questions...
+	],
+	// Add more levels...
+};
+
+// Add similar structures for Russian and History
+
+async function checkExistingQuestions(subject, level) {
+	const q = query(collection(db, "tests"), where("subject", "==", subject), where("level", "==", level));
+
+	const snapshot = await getDocs(q);
+	return !snapshot.empty;
+}
+
+async function uploadQuestions() {
 	try {
-		// Read the JSON file
-		const jsonPath = path.join(process.cwd(), "tests.json");
-		const jsonData = await fs.readFile(jsonPath, "utf8");
-		const tests = JSON.parse(jsonData);
-
-		// Upload each test to Firebase
-		for (const test of tests) {
-			const testData = {
-				...test,
-				createdAt: new Date(),
-			};
-
-			await addDoc(collection(db, "tests"), testData);
-			console.log(`Uploaded test: ${test.question.substring(0, 50)}...`);
+		// Upload English questions
+		for (const [level, questions] of Object.entries(englishQuestions)) {
+			const exists = await checkExistingQuestions("english", level);
+			if (!exists) {
+				for (const question of questions) {
+					await addDoc(collection(db, "tests"), question);
+					console.log(`Uploaded English ${level} question`);
+				}
+			}
 		}
 
-		console.log("All tests uploaded successfully!");
+		// Upload Math questions
+		for (const [level, questions] of Object.entries(mathQuestions)) {
+			const exists = await checkExistingQuestions("math", level);
+			if (!exists) {
+				for (const question of questions) {
+					await addDoc(collection(db, "tests"), question);
+					console.log(`Uploaded Math ${level} question`);
+				}
+			}
+		}
+
+		// Add similar blocks for Russian and History
+
+		console.log("Upload completed successfully!");
 	} catch (error) {
-		console.error("Error uploading tests:", error);
+		console.error("Error uploading questions:", error);
 	}
 }
 
-uploadTests();
+// Run the upload
+uploadQuestions();

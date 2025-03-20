@@ -1,24 +1,19 @@
-<!-- filepath: src/App.vue -->
 <template>
 	<div id="app">
-		<nav v-if="user" class="navbar">
-			<div class="nav-brand">Test App</div>
+		<nav class="navbar">
+			<div class="nav-brand"><h1>Test.me</h1></div>
 			<div class="nav-items">
-				<router-link to="/dashboard" class="nav-link">Dashboard</router-link>
 				<div class="user-profile" @click="toggleProfileMenu">
-					<img :src="userPhotoURL" :alt="user.displayName" class="profile-image" />
+					<img :src="userPhotoURL" :alt="user.displayName || 'User'" class="profile-image" />
 					<div v-if="showProfileMenu" class="profile-menu">
-						<div class="profile-info">
-							<img :src="userPhotoURL" :alt="user.displayName" class="profile-image-small" />
-							<span>{{ user.displayName || user.email }}</span>
-						</div>
 						<router-link to="/dashboard" class="menu-item">Dashboard</router-link>
+						<router-link to="/contact" class="menu-item">Contact Us</router-link>
 						<a href="#" @click.prevent="logout" class="menu-item">Logout</a>
 					</div>
 				</div>
 			</div>
 		</nav>
-
+		<!-- nav ends -->
 		<main>
 			<div v-if="!user">
 				<h2>Login</h2>
@@ -138,6 +133,9 @@
 		onAuthStateChanged,
 	} from "firebase/auth";
 	import { collection, getDocs, query, where, addDoc, orderBy, limit } from "firebase/firestore";
+	import { ref, computed } from "vue";
+	import { auth } from "./firebase";
+	import { signOut } from "firebase/auth";
 
 	export default {
 		name: "App",
@@ -156,11 +154,22 @@
 			const userAnswers = ref([]);
 			const score = ref(0);
 			const showProfileMenu = ref(false);
+			const profileRef = ref(null);
+			const showMobileMenu = ref(false);
+
+			const toggleMobileMenu = () => {
+				showMobileMenu.value = !showMobileMenu.value;
+			};
 
 			const userPhotoURL = computed(() => {
-				return user.value?.photoURL || "https://www.gravatar.com/avatar/?d=mp";
+				if (user.value && user.value.photoURL) {
+					return user.value.photoURL;
+				}
+				return "default-user-icon.png"; // Bu yerda default user icon'ning yo'lini ko'rsating
 			});
-
+			const toggleProfileMenu = () => {
+				showProfileMenu.value = !showProfileMenu.value;
+			};
 			const currentQuestion = computed(() => questions.value[currentQuestionIndex.value]);
 
 			const login = async () => {
@@ -185,17 +194,8 @@
 			};
 
 			const logout = async () => {
-				try {
-					await signOut(auth);
-					user.value = null;
-					showProfileMenu.value = false;
-				} catch (error) {
-					console.error("Logout error:", error);
-				}
-			};
-
-			const toggleProfileMenu = () => {
-				showProfileMenu.value = !showProfileMenu.value;
+				await signOut(auth);
+				user.value = null;
 			};
 
 			const startTest = async () => {
@@ -296,6 +296,13 @@
 				nextQuestion,
 				finishTest,
 				goToDashboard,
+				showMobileMenu,
+				toggleMobileMenu,
+				user,
+				showProfileMenu,
+				toggleProfileMenu,
+				logout,
+				userPhotoURL,
 			};
 		},
 	};
@@ -326,7 +333,6 @@
 		background-color: #007bff;
 		color: white;
 		padding: 1rem;
-		box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 	}
 
 	.nav-brand {
@@ -334,20 +340,39 @@
 		font-weight: bold;
 	}
 
-	.nav-items {
-		display: flex;
-		align-items: center;
-		gap: 1rem;
+	.user-profile {
+		position: relative;
+		cursor: pointer;
 	}
 
-	.nav-link {
-		color: white;
+	.profile-image {
+		width: 40px;
+		height: 40px;
+		border-radius: 50%;
+		object-fit: cover;
+	}
+
+	.profile-menu {
+		position: absolute;
+		top: 50px;
+		right: 0;
+		background-color: white;
+		box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+		border-radius: 8px;
+		overflow: hidden;
+		width: 200px;
+	}
+
+	.menu-item {
+		display: block;
+		padding: 0.75rem 1rem;
+		color: #333;
 		text-decoration: none;
-		font-size: 1rem;
+		font-size: 0.9rem;
 	}
 
-	.nav-link:hover {
-		text-decoration: underline;
+	.menu-item:hover {
+		background-color: #f0f0f0;
 	}
 
 	.user-profile {
@@ -504,7 +529,158 @@
 		max-width: 400px;
 		margin: 0 auto;
 	}
+	.mobile-menu-btn {
+		display: none;
+		background: none;
+		border: none;
+		padding: 10px;
+		cursor: pointer;
+	}
 
+	.hamburger {
+		display: block;
+		width: 25px;
+		height: 3px;
+		background: white;
+		position: relative;
+	}
+
+	.hamburger::before,
+	.hamburger::after {
+		content: "";
+		position: absolute;
+		width: 100%;
+		height: 3px;
+		background: white;
+		left: 0;
+	}
+
+	.hamburger::before {
+		top: -8px;
+	}
+
+	.hamburger::after {
+		bottom: -8px;
+	}
+	.user-profile {
+		position: relative;
+		cursor: pointer;
+	}
+
+	.profile-trigger {
+		display: flex;
+		align-items: center;
+		gap: 8px;
+		padding: 5px;
+	}
+
+	.username {
+		color: white;
+		margin-right: 4px;
+	}
+
+	.dropdown-arrow {
+		color: white;
+		font-size: 12px;
+	}
+
+	.profile-menu {
+		position: absolute;
+		top: 100%;
+		right: 0;
+		background-color: white;
+		box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+		border-radius: 8px;
+		width: 220px;
+		z-index: 1000;
+		margin-top: 8px;
+	}
+
+	.profile-info {
+		padding: 15px;
+		border-bottom: 1px solid #eee;
+		display: flex;
+		align-items: center;
+		gap: 10px;
+	}
+
+	.user-name {
+		font-weight: 500;
+		color: #333;
+		word-break: break-word;
+	}
+
+	.menu-item {
+		display: flex;
+		align-items: center;
+		gap: 10px;
+		padding: 12px 15px;
+		color: #333;
+		text-decoration: none;
+		transition: background-color 0.2s;
+	}
+
+	.menu-item:hover {
+		background-color: #f5f5f5;
+	}
+
+	.menu-item i {
+		width: 20px;
+	}
+
+	.logout {
+		color: #dc3545;
+	}
+
+	.profile-image {
+		width: 35px;
+		height: 35px;
+		border-radius: 50%;
+		object-fit: cover;
+	}
+
+	.profile-image-small {
+		width: 40px;
+		height: 40px;
+		border-radius: 50%;
+		object-fit: cover;
+	}
+
+	@media (max-width: 768px) {
+		.mobile-menu-btn {
+			display: block;
+		}
+
+		.nav-items {
+			display: none;
+			width: 100%;
+			position: absolute;
+			top: 100%;
+			left: 0;
+			background-color: #007bff;
+			padding: 1rem;
+		}
+
+		.nav-items.active {
+			display: flex;
+			flex-direction: column;
+		}
+
+		.profile-menu {
+			position: fixed;
+			top: auto;
+			right: 10px;
+			width: calc(100% - 20px);
+			max-width: 300px;
+		}
+		.profile-menu {
+			position: fixed;
+			top: auto;
+			right: 10px;
+			width: calc(100% - 20px);
+			max-width: 300px;
+		}
+	}
 	@media (max-width: 600px) {
 		.navbar {
 			flex-direction: column;

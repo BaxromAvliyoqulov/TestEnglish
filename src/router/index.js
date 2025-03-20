@@ -4,6 +4,7 @@ import TestSelection from "../views/TestSelection.vue";
 import TestPage from "../views/TestPage.vue";
 import ResultPage from "../views/ResultPage.vue";
 import Dashboard from "../views/Dashboard.vue";
+import Contact from "../views/Contact.vue";
 
 const routes = [
 	{ path: "/", component: Login },
@@ -11,6 +12,7 @@ const routes = [
 	{ path: "/test", component: TestPage },
 	{ path: "/result", component: ResultPage },
 	{ path: "/dashboard", component: Dashboard },
+	{ path: "/contact", component: Contact },
 ];
 
 const router = createRouter({
