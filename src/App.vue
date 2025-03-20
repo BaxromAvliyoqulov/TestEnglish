@@ -133,9 +133,6 @@
 		onAuthStateChanged,
 	} from "firebase/auth";
 	import { collection, getDocs, query, where, addDoc, orderBy, limit } from "firebase/firestore";
-	import { ref, computed } from "vue";
-	import { auth } from "./firebase";
-	import { signOut } from "firebase/auth";
 
 	export default {
 		name: "App",
