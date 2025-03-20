@@ -32,7 +32,7 @@
 						style="background-color: white; border: 1px solid blue; color: blue"
 					>
 						<img
-							src="@/assets/google-icon.png"
+							src="img/google.png"
 							alt="Google Icon"
 							style="width: 16px; height: 16px; margin-right: 8px"
 						/>
