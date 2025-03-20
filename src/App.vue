@@ -3,8 +3,8 @@
 		<nav class="navbar">
 			<div class="nav-brand"><h1>Test.me</h1></div>
 			<div class="nav-items">
-				<div class="user-profile" @click="toggleProfileMenu">
-					<img :src="userPhotoURL" :alt="user.displayName || 'User'" class="profile-image" />
+				<div class="user-profile" @click="toggleProfileMenu" v-if="user">
+					<img :src="userPhotoURL" :alt="user?.displayName || 'User'" class="profile-image" />
 					<div v-if="showProfileMenu" class="profile-menu">
 						<router-link to="/dashboard" class="menu-item">Dashboard</router-link>
 						<router-link to="/contact" class="menu-item">Contact Us</router-link>
@@ -132,7 +132,7 @@
 		signOut,
 		onAuthStateChanged,
 	} from "firebase/auth";
-	import { collection, getDocs, query, where, addDoc, orderBy, limit } from "firebase/firestore";
+	import { collection, getDocs, query, where, addDoc } from "firebase/firestore";
 
 	export default {
 		name: "App",
@@ -159,7 +159,7 @@
 			};
 
 			const userPhotoURL = computed(() => {
-				if (user.value && user.value.photoURL) {
+				if (user.value?.photoURL) {
 					return user.value.photoURL;
 				}
 				return "default-user-icon.png"; // Bu yerda default user icon'ning yo'lini ko'rsating
@@ -188,9 +188,7 @@
 					const q = query(
 						collection(db, "tests"),
 						where("subject", "==", subject.value),
-						where("level", "==", level.value),
-						orderBy("createdAt"),
-						limit(parseInt(testCount.value))
+						where("level", "==", level.value)
 					);
 
 					const querySnapshot = await getDocs(q);
@@ -198,6 +196,11 @@
 					querySnapshot.forEach((doc) => {
 						questions.value.push({ id: doc.id, ...doc.data() });
 					});
+
+					// Shuffle and limit questions
+					questions.value = questions.value
+						.sort(() => Math.random() - 0.5)
+						.slice(0, parseInt(testCount.value));
 
 					if (questions.value.length === 0) {
 						alert("No questions found for the selected criteria. Please try different options.");
