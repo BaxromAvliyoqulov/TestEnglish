@@ -1,4 +1,3 @@
-<!-- filepath: src/views/Login.vue -->
 <template>
 	<div class="login">
 		<h1>Login</h1>

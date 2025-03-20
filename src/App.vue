@@ -27,8 +27,18 @@
 						<input type="password" v-model="password" required />
 					</div>
 					<button type="submit">Login</button>
+					<button
+						@click="loginWithGoogle"
+						style="background-color: white; border: 1px solid blue; color: blue"
+					>
+						<img
+							src="path/to/google-icon.png"
+							alt="Google Icon"
+							style="width: 16px; height: 16px; margin-right: 8px"
+						/>
+						Continue with Google
+					</button>
 				</form>
-				<button @click="loginWithGoogle">Login with Google</button>
 			</div>
 			<div v-else-if="!testSelected">
 				<h2>Select Test</h2>
